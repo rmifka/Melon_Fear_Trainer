@@ -5,4 +5,6 @@
 * Loading Night or Day Scene
 * Teleporting
 * Visualizing all the triggers
+* Speedhack
+* Change State of Food (Cooked/Uncooked)
 * More coming soon . . . 
