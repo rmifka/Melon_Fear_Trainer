@@ -16,3 +16,7 @@
 4. Download the [MelonFearTrainer.dll](https://github.com/rmifka/Melon_Fear_Trainer/releases)
 5. Put the downloaded file into the Fears To Fathom Episode 1 Mods Folder
 6. Open the game and press Tab to open the menu
+
+## TODO
+* Add player movement visualization
+* Make Speedhack time setable
