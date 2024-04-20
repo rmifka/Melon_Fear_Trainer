@@ -20,3 +20,4 @@
 ## TODO
 * Add player movement visualization
 * Make Speedhack time setable
+* Reset Button (For Resettiing Rungs, maybe?)
