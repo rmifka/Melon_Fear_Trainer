@@ -6,6 +6,7 @@ using MelonLoader;
 // The namespace of your mod class
 // ...
 [assembly: MelonInfo(typeof(FearTrainer), "Fear Trainer", "0.0.1", "Renschi")]
+//[assembly: MelonInfo(typeof(PracticePlugin), "Practice Plugin", "0.0.1", "Renschi")]
 [assembly: MelonGame("Rayll", "Fears To Fathom")]
 
 // General Information about an assembly is controlled through the following 

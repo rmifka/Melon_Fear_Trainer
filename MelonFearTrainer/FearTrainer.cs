@@ -49,6 +49,7 @@ namespace MelonFearTrainer
 
         public override void OnGUI()
         {
+            OnPracticeGUI();
             if (_showMenu)
             {
                 DrawModMenu();
@@ -58,6 +59,8 @@ namespace MelonFearTrainer
 
         public override void OnUpdate()
         {
+            base.OnUpdate();
+            OnPracticeUpdate();
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 ToggleMenu();
@@ -196,8 +199,8 @@ namespace MelonFearTrainer
             GUILayout.Label(category.ToString(), _labelStyle);
 
             Setting[] settings = category == ModCategory.Player ? _playerSettings : _utilitySettings;
-            
-            foreach (var setting in settings) 
+
+            foreach (var setting in settings)
             {
                 DrawSetting(setting);
             }
@@ -386,6 +389,115 @@ namespace MelonFearTrainer
             base.OnInitializeMelon();
 
             MelonLogger.Msg("FearTrainer loaded!");
+        }
+
+        private class PracticeData
+        {
+            public bool AlarmClockClicked;
+            public bool HomeworkDone;
+            public bool FoodDone;
+            public bool BedPlayerLoaded;
+            public bool PlayerHiding;
+        }
+
+        private bool _practicePluginEnabled = false;
+        private PracticeData _practiceData = new PracticeData();
+
+        private horrorEventsHandler _horrorEventsHandler;
+        
+        private void SetInstanceValues()
+        {
+            if (!_practiceData.AlarmClockClicked)
+            {
+                var bedPlayer = GameObject.Find("Bed Player");
+                if (bedPlayer != null)
+                {
+                    if (!_practiceData.BedPlayerLoaded)
+                    {
+                        _practiceData.BedPlayerLoaded = true;
+                    }
+
+                    bool alarmClockClicked = bedPlayer.GetComponentInChildren<Camera>()
+                        .GetComponent<sleepCamRaycast>()
+                        .clicked;
+                    _practiceData.AlarmClockClicked = alarmClockClicked;
+                }
+            }
+
+            if (!_practiceData.HomeworkDone)
+            {
+                bool homeworkDone = PlayerPrefs.GetInt("HomeworkDone") == 1;
+                _practiceData.HomeworkDone = homeworkDone;
+            }
+
+            if (!_practiceData.FoodDone)
+            {
+                bool foodDone = PlayerPrefs.GetInt("FoodDone") == 1;
+                _practiceData.FoodDone = foodDone;
+            }
+
+            if (_horrorEventsHandler != null)
+            {
+                _practiceData.PlayerHiding = _horrorEventsHandler.playerInHideRoom;
+            }
+            
+        }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        {
+            base.OnSceneWasLoaded(buildIndex, sceneName);
+            if (sceneName == "Scene 1 Dark")
+            {
+                _horrorEventsHandler = GameObject.Find("GM").GetComponent<horrorEventsHandler>();
+            }
+        }
+
+        public void OnPracticeUpdate()
+        {
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                _practicePluginEnabled = !_practicePluginEnabled;
+                MelonLogger.Log("Speedrun Practice Plugin " + (_practicePluginEnabled ? "Enabled" : "Disabled"));
+            }
+
+            if (_practicePluginEnabled)
+            {
+                SetInstanceValues();
+            }
+        }
+
+        public void OnPracticeGUI()
+        {
+            if (_practicePluginEnabled)
+            {
+                GUIStyle style = new GUIStyle(GUI.skin.label);
+                Rect guiArea = new Rect(0, 0, Screen.width, Screen.height);
+                
+                GUILayout.BeginArea(guiArea);
+                GUILayout.BeginVertical();
+
+                GUILayout.FlexibleSpace(); // Pushes the following content to the center
+
+                style.normal.textColor = _practiceData.AlarmClockClicked ? Color.green : Color.red;
+                GUILayout.Label("Alarm Clock Clicked: " + _practiceData.AlarmClockClicked, style);
+
+                style.normal.textColor = _practiceData.HomeworkDone ? Color.green : Color.red;
+                GUILayout.Label("Homework Done: " + _practiceData.HomeworkDone, style);
+
+                style.normal.textColor = _practiceData.FoodDone ? Color.green : Color.red;
+                GUILayout.Label("Food Done: " + _practiceData.FoodDone, style);
+
+                style.normal.textColor = _practiceData.BedPlayerLoaded ? Color.green : Color.red;
+                GUILayout.Label("Bed Player Loaded: " + _practiceData.BedPlayerLoaded, style);
+
+                style.normal.textColor = _practiceData.PlayerHiding ? Color.green : Color.red;
+                GUILayout.Label("Player Hiding: " + _practiceData.PlayerHiding, style);
+
+                GUILayout.FlexibleSpace(); // Pushes the above content to the center
+
+                GUILayout.EndVertical();
+                GUILayout.EndArea();
+            }
         }
     }
 }
