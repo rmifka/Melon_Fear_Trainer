@@ -20,4 +20,6 @@
 ## TODO
 * Add player movement visualization
 * Make Speedhack time setable
-* Reset Button (For Resettiing Rungs, maybe?)
+
+# Other Stuff
+* [Resetter](https://github.com/rmifka/Resetter)
